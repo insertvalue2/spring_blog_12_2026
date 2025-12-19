@@ -60,13 +60,21 @@ public class User {
 
     @Builder
     public User(Long id, String username, String password, String email,
-                String profileImage, Timestamp createdAt) {
+                String profileImage, Timestamp createdAt, List<UserRole> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.profileImage = profileImage;
         this.createdAt = createdAt;
+
+         // roles가 없거나 비어있으면 -> 'USER' 권한 강제 주입
+        // 빌더로 roles를 안 넣으면 null이 들어오므로 체크해야 함
+        this.roles = (roles != null) ? roles : new ArrayList<>();
+
+        if (this.roles.isEmpty()) {
+            this.roles.add(UserRole.builder().role(Role.USER).build());
+        }
     }
 
     // 회원정보 수정 비즈니스 로직 추가
